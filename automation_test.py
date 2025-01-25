@@ -3,7 +3,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import os
 import time
+
 
 def test_registration_form():
     # Set Chrome options
@@ -13,7 +15,12 @@ def test_registration_form():
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-extensions")
     options.add_argument("--remote-debugging-port=9222")  # Enable debugging port
-    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.110 Safari/537.36")
+    options.add_argument(
+        f"--user-data-dir=/tmp/chrome_user_data_{os.getpid()}"
+    )  # Unique directory to avoid conflicts
+    options.add_argument(
+        "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.110 Safari/537.36"
+    )
 
     # Disable headless mode for debugging (optional)
     # options.add_argument("--headless")
@@ -38,39 +45,49 @@ def test_registration_form():
             raise Exception("All attempts to load the page failed.")
 
         # Click the JOIN NOW button to open the registration page
-        join_now_button = driver.find_element(By.LINK_TEXT, "JOIN NOW!")
+        join_now_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.LINK_TEXT, "JOIN NOW!"))
+        )
         join_now_button.click()
 
+        # Wait for the registration form to be visible
         WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.ID, "form"))
         )
 
+        # Fill out the form
         title_dropdown = Select(driver.find_element(By.ID, "title"))
         title_dropdown.select_by_visible_text("Mr")
 
-        # First and surname
+        # Enter first and last names
         first_name_field = driver.find_element(By.ID, "forename")
         first_name_field.send_keys("John")
 
         surname_field = driver.find_element(By.NAME, "map(lastName)")
         surname_field.send_keys("Doe")
 
+        # Agree to terms and conditions
         terms_checkbox = driver.find_element(By.NAME, "map(terms)")
         terms_checkbox.click()
 
-        # Submit the form by clicking the JOIN NOW button
-        join_now_button = driver.find_element(By.ID, "form")
-        join_now_button.submit()
+        # Submit the form
+        driver.find_element(By.ID, "form").submit()
 
         # Validate the error message under the date of birth box
         error_message = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//label[@for='dob']//following-sibling::div[@class='error']"))
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//label[@for='dob']//following-sibling::div[@class='error']",
+                )
+            )
         )
 
         assert error_message.text == "This field is required", "Error message does not match!"
 
     finally:
         driver.quit()
+
 
 if __name__ == "__main__":
     test_registration_form()
