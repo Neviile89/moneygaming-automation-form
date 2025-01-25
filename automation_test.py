@@ -58,3 +58,4 @@ if __name__ == "__main__":
     # And a second test to trigger the CI pipeline (just to be sure it works)
     # Third test to trigger the CI pipeline
     # Still trying to create a proper pull request
+    # Changed the test branch, now it should work
