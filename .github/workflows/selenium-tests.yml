@@ -32,13 +32,12 @@ jobs:
         run: |
           wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
-          sudo ln -s /usr/bin/google-chrome /usr/local/bin/google-chrome || true
 
-      - name: Install ChromeDriver
+      - name: Download and Install ChromeDriver
         run: |
-          wget -q https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/132.0.6834.110/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
+          wget -q https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/132.0.6834.110/linux64/chromedriver-linux64.zip -O chromedriver-linux64.zip
+          unzip chromedriver-linux64.zip -d chromedriver-linux64
+          sudo mv chromedriver-linux64/chromedriver /usr/local/bin/
           sudo ln -s /usr/local/bin/chromedriver /usr/bin/chromedriver || true
 
       - name: Run Selenium tests
