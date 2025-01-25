@@ -28,16 +28,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y wget unzip curl
 
-      - name: Install Google Chrome
+      - name: Install Chrome
         run: |
-          sudo apt-get install -y google-chrome-stable
+          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
+          sudo ln -s /usr/bin/google-chrome /usr/local/bin/google-chrome || true
 
-      - name: Install ChromeDriver version 132
+      - name: Install ChromeDriver
         run: |
-          # Download ChromeDriver version 132.0.6834.110
-          wget https://storage.googleapis.com/chrome-for-testing-public/132.0.6834.110/linux64/chrome-linux64.zip
+          wget -q https://storage.googleapis.com/chromium-browser-snapshots/Linux_x64/132.0.6834.110/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
           sudo mv chromedriver /usr/local/bin/
+          sudo ln -s /usr/local/bin/chromedriver /usr/bin/chromedriver || true
 
       - name: Run Selenium tests
         env:
