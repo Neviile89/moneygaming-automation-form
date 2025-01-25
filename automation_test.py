@@ -5,11 +5,17 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import os
 import time
 
 def test_registration_form():
+    # Set Chrome options to specify a unique user data directory
+    options = webdriver.ChromeOptions()
+    user_data_dir = os.path.join(os.getcwd(), "user-data-dir")
+    options.add_argument(f"--user-data-dir={user_data_dir}")
+
     # Web driver
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(options=options)
     driver.maximize_window()
 
     try:
