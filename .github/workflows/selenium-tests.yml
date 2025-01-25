@@ -40,7 +40,14 @@ jobs:
           
           # Get the corresponding ChromeDriver version
           CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          echo "Detected ChromeDriver version: $CHROMEDRIVER_VERSION"
+
+          # Check if the specific ChromeDriver version is available
+          if [[ "$CHROMEDRIVER_VERSION" == *"NoSuchKey"* ]]; then
+            echo "ChromeDriver version $CHROME_VERSION not found, using fallback version"
+            CHROMEDRIVER_VERSION="114.0.5735.90"  # Fallback to a known version that works (adjust as needed)
+          fi
+          
+          echo "Using ChromeDriver version: $CHROMEDRIVER_VERSION"
           
           # Download ChromeDriver
           echo "Downloading ChromeDriver version: $CHROMEDRIVER_VERSION"
