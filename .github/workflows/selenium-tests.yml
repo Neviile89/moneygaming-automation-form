@@ -26,13 +26,22 @@ jobs:
       - name: Install Chrome
         run: |
           sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+          sudo apt-get install -y wget unzip
+          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb
+          sudo apt-get -f install -y
 
-      - name: Set up ChromeDriver
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: 'latest'
-          install-chromedriver: true
+      - name: Install ChromeDriver
+        run: |
+          CHROMEDRIVER_VERSION=114.0.5735.90
+          wget -q https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
+          unzip chromedriver_linux64.zip
+          sudo mv chromedriver /usr/local/bin/
 
       - name: Run Selenium tests
-        run: python automation_test.py
+        env:
+          PATH: /usr/local/bin:$PATH
+        run: |
+          google-chrome --version
+          chromedriver --version
+          python automation_test.py
