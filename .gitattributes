@@ -1,5 +1,2 @@
 *.dll filter=lfs diff=lfs merge=lfs -text
 chrome-win32/chrome.dll filter=lfs diff=lfs merge=lfs -text
-chrome-win32/chrome.zip filter=lfs diff=lfs merge=lfs -text
-chrome-win32/chrome.part* filter=lfs diff=lfs merge=lfs -text
-chrome.part* filter=lfs diff=lfs merge=lfs -text
