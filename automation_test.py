@@ -6,15 +6,14 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import os
-import time
+import tempfile
 import shutil
+import time
 
 def test_registration_form():
-    # Set Chrome options to specify a unique user data directory
+    # Set Chrome options to specify a temporary user data directory
     options = webdriver.ChromeOptions()
-    user_data_dir = os.path.join(os.getcwd(), "user-data-dir")
-    if os.path.exists(user_data_dir):
-        shutil.rmtree(user_data_dir)
+    user_data_dir = tempfile.mkdtemp()
     options.add_argument(f"--user-data-dir={user_data_dir}")
 
     # Web driver
@@ -59,8 +58,7 @@ def test_registration_form():
 
     finally:
         driver.quit()
-        if os.path.exists(user_data_dir):
-            shutil.rmtree(user_data_dir)
+        shutil.rmtree(user_data_dir)
 
 if __name__ == "__main__":
     test_registration_form()
