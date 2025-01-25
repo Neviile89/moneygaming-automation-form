@@ -23,11 +23,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install selenium
 
-      - name: Download WebDriver
+      - name: Install Chrome
         run: |
           sudo apt-get update
           sudo apt-get install -y wget unzip
-          wget https://chromedriver.storage.googleapis.com/$(wget -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE)/chromedriver_linux64.zip
+          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb
+          sudo apt-get -f install -y
+
+      - name: Install ChromeDriver
+        run: |
+          CHROME_VERSION=$(google-chrome --version | cut -d ' ' -f 3)
+          CHROMEDRIVER_VERSION=$(curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+          wget -q https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
           sudo mv chromedriver /usr/local/bin/
 
