@@ -53,3 +53,5 @@ def test_registration_form():
 
 if __name__ == "__main__":
     test_registration_form()
+
+    # Just testing to trigger the CI pipeline
