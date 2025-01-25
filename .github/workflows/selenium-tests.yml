@@ -23,14 +23,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install selenium
 
-      - name: Install Chrome
+      - name: Install essential commands
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget unzip
+          sudo apt-get install -y wget unzip coreutils
+
+      - name: Install Chrome
+        run: |
           wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb
-          sudo apt-get -f install -y
-          sudo ln -s /usr/bin/google-chrome /usr/local/bin/google-chrome
+          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
 
       - name: Install ChromeDriver
         run: |
