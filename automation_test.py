@@ -11,10 +11,12 @@ import shutil
 import time
 
 def test_registration_form():
-    # Set Chrome options to specify a temporary user data directory
+    # Set Chrome options to specify a temporary user data directory and handle other conflicts
     options = webdriver.ChromeOptions()
     user_data_dir = tempfile.mkdtemp()
     options.add_argument(f"--user-data-dir={user_data_dir}")
+    options.add_argument("--no-sandbox")  # Added to handle potential sandbox issues
+    options.add_argument("--disable-dev-shm-usage")  # Added to handle shared memory issues
 
     # Web driver
     driver = webdriver.Chrome(options=options)
