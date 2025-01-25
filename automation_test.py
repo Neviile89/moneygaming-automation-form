@@ -10,12 +10,17 @@ def test_registration_form():
     options = webdriver.ChromeOptions()
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-extensions")
+    options.add_argument("--remote-debugging-port=9222")  # Enable debugging port
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.110 Safari/537.36")
 
-    # Web driver
+    # Disable headless mode for debugging (optional)
+    # options.add_argument("--headless")
+
+    # WebDriver setup
     driver = webdriver.Chrome(options=options)
+    driver.set_page_load_timeout(120)
     driver.maximize_window()
 
     try:
@@ -23,6 +28,7 @@ def test_registration_form():
         retries = 3
         for attempt in range(retries):
             try:
+                print(f"Attempt {attempt + 1} to load the page...")
                 driver.get("https://moneygaming.qa.gameaccount.com/")
                 break
             except Exception as e:
