@@ -23,6 +23,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install selenium
 
+      - name: Test network connectivity
+        run: curl -I https://moneygaming.qa.gameaccount.com/
+
       - name: Install essential commands
         run: |
           sudo apt-get update
@@ -39,11 +42,6 @@ jobs:
           unzip chromedriver-linux64.zip -d chromedriver-linux64
           sudo mv chromedriver-linux64/chromedriver-linux64/chromedriver /usr/local/bin/
           sudo ln -s /usr/local/bin/chromedriver /usr/bin/chromedriver || true
-
-      - name: Clean up workspace
-        run: |
-          sudo rm -rf ~/.cache/google-chrome
-          sudo rm -rf /tmp/*
 
       - name: Run Selenium tests
         env:

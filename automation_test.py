@@ -3,6 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 
 def test_registration_form():
     # Set Chrome options
@@ -18,8 +19,17 @@ def test_registration_form():
     driver.maximize_window()
 
     try:
-        # Navigating to the website
-        driver.get("https://moneygaming.qa.gameaccount.com/")
+        # Retry logic for loading the page
+        retries = 3
+        for attempt in range(retries):
+            try:
+                driver.get("https://moneygaming.qa.gameaccount.com/")
+                break
+            except Exception as e:
+                print(f"Attempt {attempt + 1} failed: {e}")
+                time.sleep(5)
+        else:
+            raise Exception("All attempts to load the page failed.")
 
         # Click the JOIN NOW button to open the registration page
         join_now_button = driver.find_element(By.LINK_TEXT, "JOIN NOW!")
