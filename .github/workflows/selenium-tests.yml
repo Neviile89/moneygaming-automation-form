@@ -29,9 +29,10 @@ jobs:
           sudo apt-get install -y google-chrome-stable
 
       - name: Set up ChromeDriver
-        uses: actions/setup-chromedriver@v1
+        uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: 'latest' # Ensures that the ChromeDriver version matches the Chrome version
+          chrome-version: 'latest'
+          install-chromedriver: true
 
       - name: Run Selenium tests
         run: python automation_test.py
