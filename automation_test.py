@@ -14,7 +14,8 @@ import uuid
 def test_registration_form():
     # Set Chrome options to specify a temporary user data directory and handle other conflicts
     options = webdriver.ChromeOptions()
-    user_data_dir = os.path.join(tempfile.gettempdir(), f"user-data-dir-{uuid.uuid4()}")
+    unique_id = uuid.uuid4()
+    user_data_dir = os.path.join(tempfile.gettempdir(), f"user-data-dir-{unique_id}-{time.time()}")
     options.add_argument(f"--user-data-dir={user_data_dir}")
     options.add_argument("--no-sandbox")  # Added to handle potential sandbox issues
     options.add_argument("--disable-dev-shm-usage")  # Added to handle shared memory issues
