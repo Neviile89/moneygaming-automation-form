@@ -1,10 +1,11 @@
+import os
+import shutil
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import os
-import time
 
 
 def test_registration_form():
@@ -15,15 +16,13 @@ def test_registration_form():
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-extensions")
     options.add_argument("--remote-debugging-port=9222")  # Enable debugging port
-    options.add_argument(
-        f"--user-data-dir=/tmp/chrome_user_data_{os.getpid()}"
-    )  # Unique directory to avoid conflicts
+
+    # Create a unique user data directory for each session
+    user_data_dir = f"/tmp/chrome_user_data_{os.getpid()}"
+    options.add_argument(f"--user-data-dir={user_data_dir}")
     options.add_argument(
         "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.110 Safari/537.36"
     )
-
-    # Disable headless mode for debugging (optional)
-    # options.add_argument("--headless")
 
     # WebDriver setup
     driver = webdriver.Chrome(options=options)
@@ -86,7 +85,10 @@ def test_registration_form():
         assert error_message.text == "This field is required", "Error message does not match!"
 
     finally:
+        # Close the browser and clean up the user data directory
         driver.quit()
+        if os.path.exists(user_data_dir):
+            shutil.rmtree(user_data_dir)
 
 
 if __name__ == "__main__":
