@@ -15,7 +15,7 @@ def test_registration_form():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-extensions")
-    options.add_argument("--headless")  # Optional: Use headless mode for CI stability
+    options.add_argument("--headless")  # Use headless mode for CI stability
 
     # Create a unique user data directory for each session
     unique_dir = f"/tmp/chrome_user_data_{os.getpid()}"
@@ -26,7 +26,7 @@ def test_registration_form():
 
     # WebDriver setup
     driver = webdriver.Chrome(options=options)
-    driver.set_page_load_timeout(120)
+    driver.set_page_load_timeout(180)  # Increase page load timeout
     driver.maximize_window()
 
     try:
@@ -36,21 +36,24 @@ def test_registration_form():
             try:
                 print(f"Attempt {attempt + 1} to load the page...")
                 driver.get("https://moneygaming.qa.gameaccount.com/")
+                WebDriverWait(driver, 30).until(
+                    EC.presence_of_element_located((By.LINK_TEXT, "JOIN NOW!"))
+                )
                 break
             except Exception as e:
                 print(f"Attempt {attempt + 1} failed: {e}")
+                if attempt == retries - 1:
+                    raise
                 time.sleep(5)
-        else:
-            raise Exception("All attempts to load the page failed.")
 
         # Click the JOIN NOW button to open the registration page
-        join_now_button = WebDriverWait(driver, 10).until(
+        join_now_button = WebDriverWait(driver, 30).until(
             EC.element_to_be_clickable((By.LINK_TEXT, "JOIN NOW!"))
         )
         join_now_button.click()
 
         # Wait for the registration form to be visible
-        WebDriverWait(driver, 10).until(
+        WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.ID, "form"))
         )
 
@@ -73,7 +76,7 @@ def test_registration_form():
         driver.find_element(By.ID, "form").submit()
 
         # Validate the error message under the date of birth box
-        error_message = WebDriverWait(driver, 10).until(
+        error_message = WebDriverWait(driver, 30).until(
             EC.presence_of_element_located(
                 (
                     By.XPATH,
