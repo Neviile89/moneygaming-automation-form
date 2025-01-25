@@ -1,21 +1,15 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import os
-import tempfile
-import shutil
 import time
-import uuid
 
 def test_registration_form():
     # Set Chrome options to handle potential conflicts
     options = webdriver.ChromeOptions()
-    options.add_argument("--no-sandbox")  # Added to handle potential sandbox issues
-    options.add_argument("--disable-dev-shm-usage")  # Added to handle shared memory issues
+    options.add_argument("--no-sandbox")  # Handle sandbox issues
+    options.add_argument("--disable-dev-shm-usage")  # Handle shared memory issues
 
     # Web driver
     driver = webdriver.Chrome(options=options)
@@ -34,9 +28,9 @@ def test_registration_form():
         )
 
         title_dropdown = Select(driver.find_element(By.ID, "title"))
-        title_dropdown.select_by_visible_text("Mr")  # I have to replace "Mr" with desired value if needed (check again)
+        title_dropdown.select_by_visible_text("Mr")
 
-        # first and surname
+        # First and surname
         first_name_field = driver.find_element(By.ID, "forename")
         first_name_field.send_keys("John")
 
@@ -50,7 +44,7 @@ def test_registration_form():
         join_now_button = driver.find_element(By.ID, "form")
         join_now_button.submit()
 
-        # Have to validate the error message under the date of birth box
+        # Validate the error message under the date of birth box
         error_message = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//label[@for='dob']//following-sibling::div[@class='error']"))
         )
@@ -62,9 +56,3 @@ def test_registration_form():
 
 if __name__ == "__main__":
     test_registration_form()
-
-    # Just testing to trigger the CI pipeline
-    # And a second test to trigger the CI pipeline (just to be sure it works)
-    # Third test to trigger the CI pipeline
-    # Still trying to create a proper pull request
-    # Changed the test branch, now it should work
