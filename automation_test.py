@@ -55,3 +55,4 @@ if __name__ == "__main__":
     test_registration_form()
 
     # Just testing to trigger the CI pipeline
+    # And a second test to trigger the CI pipeline (just to be sure it works)
