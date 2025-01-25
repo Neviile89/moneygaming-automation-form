@@ -34,17 +34,53 @@ jobs:
 
       - name: Install correct ChromeDriver
         run: |
+          # Get the Chrome version
           CHROME_VERSION=$(google-chrome --version | cut -d ' ' -f 3 | cut -d '.' -f 1)
+          echo "Detected Chrome version: $CHROME_VERSION"
+          
+          # Get the corresponding ChromeDriver version
           CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
+          echo "Detected ChromeDriver version: $CHROMEDRIVER_VERSION"
+          
+          # Download ChromeDriver
+          echo "Downloading ChromeDriver version: $CHROMEDRIVER_VERSION"
           wget -q https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
+          if [ $? -ne 0 ]; then
+            echo "Error downloading ChromeDriver"
+            exit 1
+          fi
+
+          # Unzip the ChromeDriver
+          echo "Unzipping ChromeDriver..."
           unzip chromedriver_linux64.zip
+          if [ $? -ne 0 ]; then
+            echo "Error unzipping ChromeDriver"
+            exit 1
+          fi
+
+          # Move the ChromeDriver to the appropriate directory
+          echo "Moving ChromeDriver to /usr/local/bin/"
           sudo mv chromedriver /usr/local/bin/
+          if [ $? -ne 0 ]; then
+            echo "Error moving ChromeDriver"
+            exit 1
+          fi
+
+          # Create a symbolic link for ChromeDriver
+          echo "Creating symlink for ChromeDriver"
           sudo ln -s /usr/local/bin/chromedriver /usr/bin/chromedriver || true
+          if [ $? -ne 0 ]; then
+            echo "Error creating symlink for ChromeDriver"
+            exit 1
+          fi
 
       - name: Run Selenium tests
         env:
           PATH: /usr/local/bin:/usr/bin:$PATH
         run: |
+          # Verify the versions of Chrome and ChromeDriver
           google-chrome --version
           chromedriver --version
+          
+          # Run the Selenium tests
           python automation_test.py
