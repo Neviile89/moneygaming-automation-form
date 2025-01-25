@@ -40,6 +40,11 @@ jobs:
           sudo mv chromedriver-linux64/chromedriver-linux64/chromedriver /usr/local/bin/
           sudo ln -s /usr/local/bin/chromedriver /usr/bin/chromedriver || true
 
+      - name: Clean up workspace
+        run: |
+          sudo rm -rf ~/.cache/google-chrome
+          sudo rm -rf /tmp/*
+
       - name: Run Selenium tests
         env:
           PATH: /usr/local/bin:/usr/bin:$PATH
