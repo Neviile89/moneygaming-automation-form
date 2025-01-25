@@ -89,5 +89,9 @@ jobs:
           google-chrome --version
           chromedriver --version
           
-          # Run the Selenium tests
+          # Run the Selenium tests with headless Chrome
           python automation_test.py
+
+      - name: Verify Chrome in headless mode
+        run: |
+          google-chrome --headless --disable-gpu --remote-debugging-port=9222 --no-sandbox --version
