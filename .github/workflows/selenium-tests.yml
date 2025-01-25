@@ -28,7 +28,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y wget unzip curl
 
-      - name: Install Chrome
+      - name: Install Google Chrome
         run: |
           sudo apt-get install -y google-chrome-stable
 
@@ -40,14 +40,7 @@ jobs:
           
           # Get the corresponding ChromeDriver version
           CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-
-          # Check if the specific ChromeDriver version is available
-          if [[ "$CHROMEDRIVER_VERSION" == *"NoSuchKey"* ]]; then
-            echo "ChromeDriver version $CHROME_VERSION not found, using fallback version"
-            CHROMEDRIVER_VERSION="114.0.5735.90"  # Fallback to a known version that works (adjust as needed)
-          fi
-          
-          echo "Using ChromeDriver version: $CHROMEDRIVER_VERSION"
+          echo "Detected ChromeDriver version: $CHROMEDRIVER_VERSION"
           
           # Download ChromeDriver
           echo "Downloading ChromeDriver version: $CHROMEDRIVER_VERSION"
@@ -56,7 +49,7 @@ jobs:
             echo "Error downloading ChromeDriver"
             exit 1
           fi
-
+          
           # Unzip the ChromeDriver
           echo "Unzipping ChromeDriver..."
           unzip chromedriver_linux64.zip
@@ -64,7 +57,7 @@ jobs:
             echo "Error unzipping ChromeDriver"
             exit 1
           fi
-
+          
           # Move the ChromeDriver to the appropriate directory
           echo "Moving ChromeDriver to /usr/local/bin/"
           sudo mv chromedriver /usr/local/bin/
@@ -72,7 +65,7 @@ jobs:
             echo "Error moving ChromeDriver"
             exit 1
           fi
-
+          
           # Create a symbolic link for ChromeDriver
           echo "Creating symlink for ChromeDriver"
           sudo ln -s /usr/local/bin/chromedriver /usr/bin/chromedriver || true
@@ -85,13 +78,6 @@ jobs:
         env:
           PATH: /usr/local/bin:/usr/bin:$PATH
         run: |
-          # Verify the versions of Chrome and ChromeDriver
           google-chrome --version
           chromedriver --version
-          
-          # Run the Selenium tests with headless Chrome
           python automation_test.py
-
-      - name: Verify Chrome in headless mode
-        run: |
-          google-chrome --headless --disable-gpu --remote-debugging-port=9222 --no-sandbox --version
