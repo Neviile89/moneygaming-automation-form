@@ -15,11 +15,11 @@ def test_registration_form():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-extensions")
-    options.add_argument("--remote-debugging-port=9222")  # Enable debugging port
+    options.add_argument("--headless")  # Optional: Use headless mode for CI stability
 
     # Create a unique user data directory for each session
-    user_data_dir = f"/tmp/chrome_user_data_{os.getpid()}"
-    options.add_argument(f"--user-data-dir={user_data_dir}")
+    unique_dir = f"/tmp/chrome_user_data_{os.getpid()}"
+    options.add_argument(f"--user-data-dir={unique_dir}")
     options.add_argument(
         "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.6834.110 Safari/537.36"
     )
@@ -87,8 +87,8 @@ def test_registration_form():
     finally:
         # Close the browser and clean up the user data directory
         driver.quit()
-        if os.path.exists(user_data_dir):
-            shutil.rmtree(user_data_dir)
+        if os.path.exists(unique_dir):
+            shutil.rmtree(unique_dir)
 
 
 if __name__ == "__main__":
