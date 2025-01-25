@@ -35,7 +35,7 @@ jobs:
       - name: Install ChromeDriver version 132
         run: |
           # Download ChromeDriver version 132.0.6834.110
-          wget https://chromedriver.storage.googleapis.com/132.0.6834.110/chromedriver_linux64.zip
+          wget https://storage.googleapis.com/chrome-for-testing-public/132.0.6834.110/linux64/chrome-linux64.zip
           unzip chromedriver_linux64.zip
           sudo mv chromedriver /usr/local/bin/
 
