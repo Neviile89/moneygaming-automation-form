@@ -33,11 +33,8 @@ jobs:
 
       - name: Install ChromeDriver
         run: |
-          CHROME_VERSION=$(google-chrome --version | cut -d ' ' -f 3)
-          echo "Detected Chrome version: $CHROME_VERSION"
-          CHROMEDRIVER_VERSION=$(curl -sS https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          echo "Detected ChromeDriver version: $CHROMEDRIVER_VERSION"
-          wget -q https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip || { echo "Failed to download ChromeDriver"; exit 1; }
+          CHROMEDRIVER_VERSION=114.0.5735.90
+          wget -q https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
           sudo mv chromedriver /usr/local/bin/
 
