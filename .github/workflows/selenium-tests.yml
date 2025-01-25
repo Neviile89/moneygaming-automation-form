@@ -32,47 +32,12 @@ jobs:
         run: |
           sudo apt-get install -y google-chrome-stable
 
-      - name: Install correct ChromeDriver
+      - name: Install ChromeDriver version 114
         run: |
-          # Get the Chrome version
-          CHROME_VERSION=$(google-chrome --version | cut -d ' ' -f 3 | cut -d '.' -f 1)
-          echo "Detected Chrome version: $CHROME_VERSION"
-          
-          # Get the corresponding ChromeDriver version
-          CHROMEDRIVER_VERSION=$(curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION)
-          echo "Detected ChromeDriver version: $CHROMEDRIVER_VERSION"
-          
-          # Download ChromeDriver
-          echo "Downloading ChromeDriver version: $CHROMEDRIVER_VERSION"
-          wget -q https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip
-          if [ $? -ne 0 ]; then
-            echo "Error downloading ChromeDriver"
-            exit 1
-          fi
-          
-          # Unzip the ChromeDriver
-          echo "Unzipping ChromeDriver..."
+          # Install ChromeDriver version 114.0.5735.90
+          wget https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
           unzip chromedriver_linux64.zip
-          if [ $? -ne 0 ]; then
-            echo "Error unzipping ChromeDriver"
-            exit 1
-          fi
-          
-          # Move the ChromeDriver to the appropriate directory
-          echo "Moving ChromeDriver to /usr/local/bin/"
           sudo mv chromedriver /usr/local/bin/
-          if [ $? -ne 0 ]; then
-            echo "Error moving ChromeDriver"
-            exit 1
-          fi
-          
-          # Create a symbolic link for ChromeDriver
-          echo "Creating symlink for ChromeDriver"
-          sudo ln -s /usr/local/bin/chromedriver /usr/bin/chromedriver || true
-          if [ $? -ne 0 ]; then
-            echo "Error creating symlink for ChromeDriver"
-            exit 1
-          fi
 
       - name: Run Selenium tests
         env:

@@ -1,7 +1,9 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
 import time
 
 def test_registration_form():
@@ -12,6 +14,9 @@ def test_registration_form():
     chrome_options.add_argument("--disable-gpu")  # Disable GPU for headless mode
     chrome_options.add_argument("--disable-dev-shm-usage")  # Fix potential memory issues
     chrome_options.add_argument("--remote-debugging-port=9222")  # Enable debugging port (optional)
+
+    # Force the use of ChromeDriver 114 despite version mismatch
+    chrome_options.add_argument('--disable-software-rasterizer')  # Disable GPU rasterization
 
     # Initialize the WebDriver with the specified options
     driver = webdriver.Chrome(options=chrome_options)
