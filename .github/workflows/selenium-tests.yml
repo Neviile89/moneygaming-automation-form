@@ -23,20 +23,30 @@ jobs:
           python -m pip install --upgrade pip
           pip install selenium
 
-      - name: Install Chrome
+      - name: Test network connectivity
+        run: curl -I https://moneygaming.qa.gameaccount.com/
+
+      - name: Install essential commands
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget unzip
-          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-          sudo dpkg -i google-chrome-stable_current_amd64.deb
-          sudo apt-get -f install -y
+          sudo apt-get install -y wget unzip curl
 
-      - name: Install ChromeDriver
+      - name: Install Chrome
         run: |
-          CHROME_DRIVER_VERSION=114.0.5735.90
-          wget -q https://chromedriver.storage.googleapis.com/$CHROME_DRIVER_VERSION/chromedriver_linux64.zip
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/
+          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt-get -f install -y
+
+      - name: Download and Install ChromeDriver
+        run: |
+          wget -q https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/132.0.6834.110/linux64/chromedriver-linux64.zip -O chromedriver-linux64.zip
+          unzip chromedriver-linux64.zip -d chromedriver-linux64
+          sudo mv chromedriver-linux64/chromedriver-linux64/chromedriver /usr/local/bin/
+          sudo ln -s /usr/local/bin/chromedriver /usr/bin/chromedriver || true
 
       - name: Run Selenium tests
-        run: python automation_test.py
+        env:
+          PATH: /usr/local/bin:/usr/bin:$PATH
+        run: |
+          google-chrome --version
+          chromedriver --version
+          python automation_test.py
