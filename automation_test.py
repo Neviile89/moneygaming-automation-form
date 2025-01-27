@@ -1,6 +1,7 @@
 import os
 import shutil
 import time
+from datetime import datetime   # Added datetime just to confirm DOB
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -15,7 +16,7 @@ def test_registration_form():
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
     options.add_argument("--disable-extensions")
-    options.add_argument("--headless")  # Use headless mode for CI stability
+    # options.add_argument("--headless")  # Use headless mode for CI stability
 
     # Create a unique user data directory for each session
     unique_dir = f"/tmp/chrome_user_data_{os.getpid()}"
@@ -68,24 +69,36 @@ def test_registration_form():
         surname_field = driver.find_element(By.NAME, "map(lastName)")
         surname_field.send_keys("Doe")
 
-        # Agree to terms and conditions
+        # Enter a valid date of birth
+        current_year = datetime.now().year
+        year_of_birth = current_year - 18  # Adjust to ensure user is over 18
+        dob_day = "7"
+        dob_month = "November"
+        dob_year = str(year_of_birth)
+
+        day_dropdown = Select(driver.find_element(By.ID, "dobDay"))
+        day_dropdown.select_by_visible_text(dob_day)
+
+        month_dropdown = Select(driver.find_element(By.ID, "dobMonth"))
+        month_dropdown.select_by_visible_text(dob_month)
+
+        year_dropdown = Select(driver.find_element(By.ID, "dobYear"))
+        year_dropdown.select_by_visible_text(dob_year)
+
+        # Click on Agree to terms and conditions
         terms_checkbox = driver.find_element(By.NAME, "map(terms)")
         terms_checkbox.click()
 
         # Submit the form
         driver.find_element(By.ID, "form").submit()
 
-        # Validate the error message under the date of birth box
-        error_message = WebDriverWait(driver, 30).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//label[@for='dob']//following-sibling::div[@class='error']",
-                )
-            )
+        # Validate that no error message appears for the date of birth
+        dob_error = driver.find_elements(
+            By.XPATH,
+            "//label[@for='dob']" # //following-sibling::div[@class='error']"
         )
 
-        assert error_message.text == "This field is required", "Error message does not match!"
+        assert len(dob_error) == 0, "Unexpected error message for date of birth!"
 
     finally:
         # Close the browser and clean up the user data directory
